@@ -724,7 +724,16 @@ function openPayment(plan){
     var name = document.getElementById('pay-name').value.trim();
     var errEl = document.getElementById('payErr');
     if(!email){ errEl.textContent='Please enter your email.'; errEl.style.display='block'; return; }
-    if(!txid || txid.length < 6){ errEl.textContent='Please enter your Transaction ID from EasyPaisa.'; errEl.style.display='block'; return; }
+    var cleanTx = txid.replace(/\s/g,'');
+    if(!cleanTx || cleanTx.length < 8){
+      errEl.textContent='Transaction ID too short. EasyPaisa TxIDs are usually 10-20 characters. Check your EasyPaisa app under Transaction History.';
+      errEl.style.display='block'; return;
+    }
+    if(!/^[A-Za-z0-9]+$/.test(cleanTx)){
+      errEl.textContent='Transaction ID should only contain letters and numbers. No spaces or special characters.';
+      errEl.style.display='block'; return;
+    }
+    txid = cleanTx;
     if(!name){ errEl.textContent='Please enter your name.'; errEl.style.display='block'; return; }
     processPayment(plan, email, txid, name);
   };
@@ -739,41 +748,47 @@ function openPayment(plan){
 }
 
 function processPayment(plan, email, txid, name){
-  // Save payment request to localStorage for admin view
+  // ── VALIDATION: TxID must look like a real EasyPaisa transaction ──────
+  // EasyPaisa TxIDs are typically 10-20 alphanumeric characters
+  var cleanTxid = txid.replace(/\s/g,'');
+  if(cleanTxid.length < 8){
+    showToast('Invalid TxID','Please enter your full EasyPaisa Transaction ID.','error');
+    return;
+  }
+
+  // ── Check if this TxID was already used ───────────────────────────────
   var payments = JSON.parse(localStorage.getItem('algoarena_payments')||'[]');
+  var duplicate = payments.find(function(p){ return p.txid === cleanTxid; });
+  if(duplicate){
+    showToast('TxID already used','This Transaction ID has already been submitted.','error');
+    return;
+  }
+
+  // ── Save as PENDING — plan is NOT activated yet ───────────────────────
   var payment = {
     id: 'PAY_' + Date.now(),
     plan: plan.id,
     planName: plan.name,
     price: plan.price,
-    email: email,
+    email: email.toLowerCase().trim(),
     name: name,
-    txid: txid,
+    txid: cleanTxid,
     timestamp: new Date().toISOString(),
-    status: 'pending'
+    status: 'pending'  // STAYS pending until admin verifies in EasyPaisa app
   };
   payments.push(payment);
   localStorage.setItem('algoarena_payments', JSON.stringify(payments));
 
-  // If logged in with matching email — activate plan
-  var u = DB.currentUser;
-  if(u && u.email.toLowerCase() === email.toLowerCase()){
-    u.plan = plan.id;
-    u.planExpiry = Date.now() + (30 * 24 * 60 * 60 * 1000); // 30 days
-    u.planTxid = txid;
-    saveData();
-    closeOverlay();
-    showToast('🎉 ' + plan.name + ' Activated!', 'Enjoy your ' + plan.name + ' plan. Thank you!', 'success');
-    showToast('Payment received', 'TxID: ' + txid + ' saved.', 'info');
-    if(DB.currentPage) goTo(DB.currentPage);
-  } else {
-    // Account not matched — show success and instruct
-    closeOverlay();
-    showPaymentSuccess(plan, email, txid);
-  }
+  // ── NEVER auto-activate — always require manual admin verification ─────
+  // You (Fatima) must:
+  // 1. Open your EasyPaisa app and check if Rs.50/100 was received
+  // 2. Match the amount + sender name with the TxID
+  // 3. Open admin panel (Ctrl+Shift+A) and click "Verify & Activate"
+  // Only THEN does the student get access
 
-  // Show notification instructions (simulating email)
-  notifyAdmin(plan, email, name, txid);
+  closeOverlay();
+  showPaymentSuccess(plan, email, cleanTxid);
+  notifyAdmin(plan, email, name, cleanTxid);
 }
 
 function showPlanGate(problem){
@@ -813,12 +828,17 @@ function showPaymentSuccess(plan, email, txid){
 
   var h = document.createElement('h2');
   h.style.cssText = 'font-size:20px;font-weight:800;text-align:center;margin-bottom:.5rem';
-  h.textContent = 'Payment Submitted!';
+  h.textContent = 'Request Received — Pending Verification';
   w.appendChild(h);
+
+  var pendingBox = document.createElement('div');
+  pendingBox.style.cssText = 'background:rgba(255,184,48,.08);border:1px solid rgba(255,184,48,.3);border-radius:var(--r12);padding:.85rem 1rem;text-align:left;margin-bottom:1rem';
+  pendingBox.innerHTML = '<b style="color:var(--am)">Your plan is NOT active yet.</b><br><span style="font-size:12px;color:var(--mu);line-height:1.7;display:block;margin-top:4px">Fatima Tu Zahra will check her EasyPaisa app, verify Rs.' + plan.price + ' was received from you, and then manually activate your account. This takes up to 2 hours.</span>';
+  w.appendChild(pendingBox);
 
   var msg = document.createElement('p');
   msg.style.cssText = 'font-size:13px;color:var(--mu);text-align:center;line-height:1.7;margin-bottom:1.5rem';
-  msg.textContent = 'Your ' + plan.name + ' plan will be activated shortly. Fatima Tu Zahra will verify your EasyPaisa TxID and activate your account within 2 hours.';
+  msg.textContent = 'You will get access to ' + plan.name + ' features only after manual verification. Save your TxID as proof.';
   w.appendChild(msg);
 
   var infoBox = document.createElement('div');
@@ -875,6 +895,10 @@ function openAdminPanel(){
   var sub = document.createElement('div');
   sub.style.cssText = 'font-size:11px;color:var(--mu);margin-bottom:1.5rem';
   sub.textContent = 'Only visible to Fatima Tu Zahra';
+  var adminNote = document.createElement('div');
+  adminNote.style.cssText = 'background:rgba(255,184,48,.08);border:1px solid rgba(255,184,48,.3);border-radius:var(--r12);padding:.75rem 1rem;font-size:12px;color:var(--am);line-height:1.7;margin-bottom:1rem';
+  adminNote.innerHTML = '<b>How to verify a payment:</b><br>1. Open your EasyPaisa app<br>2. Check transaction history — confirm Rs.50 or Rs.100 was received<br>3. Match the sender name and amount with the entry below<br>4. Only THEN click "Verify & Activate"';
+  w.appendChild(adminNote);
   w.appendChild(sub);
 
   var totalRev = payments.reduce(function(a,p){ return a + (PLANS[p.plan]?PLANS[p.plan].price:0); }, 0);
@@ -922,7 +946,7 @@ function openAdminPanel(){
         var activateBtn = document.createElement('button');
         activateBtn.className = 'btn btn-sm btn-s';
         activateBtn.style.cssText = 'margin-top:.6rem;font-size:11px';
-        activateBtn.textContent = '✓ Mark Verified & Activate';
+        activateBtn.textContent = 'Check EasyPaisa app first → then click: Verify & Activate';
         activateBtn.onclick = (function(pay){ return function(){
           pay.status = 'verified';
           // Find user and upgrade plan
