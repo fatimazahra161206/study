@@ -342,7 +342,7 @@ tbody tr:hover td{background:rgba(110,72,255,.04)}
       <span style="font-size:12px;color:var(--gl)">📱 Pay via EasyPaisa 03295787944 → get instant access</span>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;text-align:left" id="pricingCards"></div>
-    <p style="font-size:12px;color:var(--dim);margin-top:2rem">All plans auto-activate after EasyPaisa payment. Questions? Email i256547@isb.nu.edu.pk</p>
+    <p style="font-size:12px;color:var(--dim);margin-top:2rem">All plans auto-activate after EasyPaisa payment. Questions? Email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="39500b0c0f0c0d0e79504a5b17574c175c5d4c174952">[email&#160;protected]</a></p>
   </section>
 
   <footer style="border-top:1px solid var(--b1);padding:3rem;max-width:1100px;margin:0 auto">
@@ -350,10 +350,11 @@ tbody tr:hover td{background:rgba(110,72,255,.04)}
       <div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem"><div style="width:30px;height:30px;background:var(--gp);border-radius:8px;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M3 8L7 4L11 8L7 12Z" fill="white"/><path d="M9 4L13 8L9 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="text-g" style="font-size:16px;font-weight:800">AlgoArena</span></div>
         <p style="font-size:13px;color:var(--mu);line-height:1.7;max-width:260px;margin-bottom:1.25rem">Empowering university students worldwide to master competitive programming and land their dream jobs.</p>
-        <div style="font-size:11px;color:var(--mu);margin-bottom:.4rem">Have an issue? Reach us:</div>
-        <div style="font-size:13px;color:var(--vl);font-weight:600"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ae3b8bfbcbfbebdcae3f9e8a4e4ffa4efeeffa4fae1">[email&#160;protected]</a></div>
-        <div style="font-size:13px;color:var(--vl);font-weight:600;margin-top:.25rem">+92 329 5787944</div>
-        <div style="font-size:12px;color:var(--mu);margin-top:.25rem">Fatima Tu Zahra — Founder</div>
+        <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:.35rem">Fatima Tu Zahra</div>
+        <div style="font-size:12px;color:var(--mu);margin-bottom:.6rem">Founder &amp; Developer · FAST-NUCES</div>
+        <a href="/cdn-cgi/l/email-protection#c2abf0f7f4f7f6f582abb1a0ecacb7eca7a6b7ecb2a9" style="display:block;font-size:13px;color:var(--vl);font-weight:600;text-decoration:none;margin-bottom:.3rem"><span class="__cf_email__" data-cfemail="98f1aaadaeadacafd8f1ebfab6f6edb6fdfcedb6e8f3">[email&#160;protected]</span></a>
+        <a href="tel:+923295787944" style="display:block;font-size:13px;color:var(--vl);font-weight:600;text-decoration:none">+92 329 5787944</a>
+        <div style="font-size:11px;color:var(--dim);margin-top:.5rem;line-height:1.6">EasyPaisa payments, bugs, feedback — message any time.</div>
       </div>
       <div>
         <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:1rem">Platform</div>
@@ -439,7 +440,7 @@ tbody tr:hover td{background:rgba(110,72,255,.04)}
   </main>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ============================================================
 // STORAGE HELPERS — localStorage persistence
 // ============================================================
@@ -731,7 +732,7 @@ function openPayment(plan){
 
   var disclaimer = document.createElement('p');
   disclaimer.style.cssText = 'font-size:11px;color:var(--dim);text-align:center;margin-top:.75rem;line-height:1.6';
-  disclaimer.textContent = 'Your plan activates immediately after submission. Fatima Tu Zahra will manually verify within 2 hours. Contact: i256547@isb.nu.edu.pk';
+  disclaimer.innerHTML = '<b>How it works:</b> Send Rs.' + plan.price + ' via EasyPaisa to 03295787944 (Fatima Tu Zahra). Enter your TxID. Plan activates within 2 hours after verification. Questions? Email i256547@isb.nu.edu.pk or WhatsApp 03295787944.';
   w.appendChild(disclaimer);
 
   openOverlay(w);
@@ -1013,26 +1014,51 @@ function applyLang(){
 }
 function saveData() {
   try {
-    var data = { users: DB.users, problemStates: DB.problemStates, bookmarks: DB.bookmarks };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    var payload = {
+      users: DB.users,
+      problemStates: DB.problemStates,
+      bookmarks: DB.bookmarks,
+      // Save current user email so we can restore on reload
+      activeEmail: DB.currentUser ? DB.currentUser.email : null
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch(e) {}
 }
 function loadData() {
   try {
     var raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      var data = JSON.parse(raw);
-      if (data.users) DB.users = data.users;
-      if (data.problemStates) DB.problemStates = data.problemStates;
-      if (data.bookmarks) DB.bookmarks = data.bookmarks;
+    if (!raw) return;
+    var data = JSON.parse(raw);
+    if (data.users)         DB.users         = data.users;
+    if (data.problemStates) DB.problemStates  = data.problemStates;
+    if (data.bookmarks)     DB.bookmarks      = data.bookmarks;
+    // Restore active user without needing password check
+    if (data.activeEmail) {
+      var found = DB.users.find(function(u){ return u.email === data.activeEmail; });
+      if (found) DB.currentUser = found;
     }
   } catch(e) {}
 }
 function saveSession(user) {
-  try { localStorage.setItem('algoarena_session', JSON.stringify({email:user.email,pass:user.pass})); } catch(e) {}
+  try {
+    // Save full session with timestamp — never expires unless user clicks Sign Out
+    var session = {
+      email: user.email,
+      pass:  user.pass,
+      name:  user.name,
+      handle: user.handle,
+      savedAt: Date.now()
+    };
+    localStorage.setItem('algoarena_session', JSON.stringify(session));
+    // Also save as a backup key
+    localStorage.setItem('aa_active_user', user.email);
+  } catch(e) {}
 }
 function clearSession() {
-  try { localStorage.removeItem('algoarena_session'); } catch(e) {}
+  try {
+    localStorage.removeItem('algoarena_session');
+    localStorage.removeItem('aa_active_user');
+  } catch(e) {}
 }
 function loadSession() {
   try {
@@ -1054,57 +1080,229 @@ var DB = {
   contestStart2: Date.now() + 7200000,
 
   problems: [
-    {id:1,title:"Hello World",cat:"PF",diff:"Beginner",tags:["I/O","Basics"],accept:98,companies:[],desc:"Print 'Hello, World!' to the console. Your very first program.",ex:{i:"(none)",o:"Hello, World!",e:"Simply output the string."},constraints:["Output exactly: Hello, World!"]},
-    {id:2,title:"Sum of Two Numbers",cat:"PF",diff:"Beginner",tags:["Variables","Arithmetic"],accept:95,companies:[],desc:"Read two integers A and B from input. Print their sum.",ex:{i:"3 7",o:"10",e:"3 + 7 = 10"},constraints:["−10⁹ ≤ A, B ≤ 10⁹"]},
-    {id:3,title:"Odd or Even",cat:"PF",diff:"Beginner",tags:["Conditionals","Modulo"],accept:90,companies:[],desc:"Given a number N, print 'Odd' if it is odd, 'Even' otherwise.",ex:{i:"7",o:"Odd",e:"7 % 2 = 1, so Odd"},constraints:["1 ≤ N ≤ 10⁶"]},
-    {id:4,title:"Factorial",cat:"PF",diff:"Beginner",tags:["Loops","Recursion"],accept:88,companies:[],desc:"Compute n! where 0 ≤ n ≤ 12. Return the result.",ex:{i:"5",o:"120",e:"5! = 5×4×3×2×1 = 120"},constraints:["0 ≤ n ≤ 12","Result fits in a 32-bit integer"]},
-    {id:5,title:"Fibonacci Series",cat:"PF",diff:"Beginner",tags:["Loops","Sequence"],accept:85,companies:[],desc:"Print the first N Fibonacci numbers separated by spaces.",ex:{i:"7",o:"0 1 1 2 3 5 8",e:"Each number is the sum of the two preceding ones."},constraints:["1 ≤ N ≤ 30"]},
-    {id:6,title:"Prime Check",cat:"PF",diff:"Beginner",tags:["Loops","Math"],accept:82,companies:[],desc:"Check whether a given number N is prime. Print YES or NO.",ex:{i:"17",o:"YES",e:"17 is divisible only by 1 and 17."},constraints:["2 ≤ N ≤ 10⁶"]},
-    {id:7,title:"Reverse a String",cat:"PF",diff:"Beginner",tags:["String","Array"],accept:87,companies:["Amazon"],desc:"Given a string S, print it reversed.",ex:{i:"hello",o:"olleh",e:"Reverse all characters."},constraints:["1 ≤ |S| ≤ 10⁵","S contains only printable ASCII"]},
-    {id:8,title:"Count Vowels",cat:"PF",diff:"Beginner",tags:["String","Loop"],accept:91,companies:[],desc:"Count the number of vowels (a,e,i,o,u) in the given string (case-insensitive).",ex:{i:"AlgoArena",o:"5",e:"A,o,A,e,a → 5 vowels"},constraints:["1 ≤ |S| ≤ 10⁵"]},
-    {id:9,title:"Two Sum",cat:"DSA",diff:"Easy",tags:["Array","Hash Map"],accept:73,companies:["Amazon","Google"],desc:"Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",ex:{i:"nums=[2,7,11,15], target=9",o:"[0,1]",e:"nums[0]+nums[1]=2+7=9"},constraints:["2 ≤ n ≤ 10⁴","Each input has exactly one solution"]},
-    {id:10,title:"Valid Parentheses",cat:"DSA",diff:"Easy",tags:["Stack","String"],accept:40,companies:["Google","Amazon"],desc:"Given a string containing just '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",ex:{i:"{[()]}",o:"true",e:"Every opening bracket has a matching closing bracket."},constraints:["1 ≤ |s| ≤ 10⁴","s consists of brackets only"]},
-    {id:11,title:"Maximum Subarray",cat:"DSA",diff:"Easy",tags:["Array","DP"],accept:50,companies:["Amazon","Microsoft"],desc:"Find the contiguous subarray which has the largest sum and return its sum. (Kadane's Algorithm)",ex:{i:"[-2,1,-3,4,-1,2,1,-5,4]",o:"6",e:"[4,-1,2,1] has the largest sum = 6"},constraints:["1 ≤ n ≤ 10⁵","-10⁴ ≤ nums[i] ≤ 10⁴"]},
-    {id:12,title:"Linked List Cycle",cat:"DSA",diff:"Easy",tags:["Linked List","Two Pointers"],accept:45,companies:["Amazon"],desc:"Given head of a linked list, determine if the linked list has a cycle using Floyd's algorithm.",ex:{i:"3→2→0→-4→(back to 2)",o:"true",e:"There is a cycle: -4 connects back to 2."},constraints:["0 ≤ number of nodes ≤ 10⁴"]},
-    {id:13,title:"Binary Search",cat:"DSA",diff:"Easy",tags:["Binary Search","Array"],accept:55,companies:["Google","Microsoft"],desc:"Implement binary search on a sorted array. Return the index of target, or -1 if not found.",ex:{i:"nums=[-1,0,3,5,9,12], target=9",o:"4",e:"9 is at index 4"},constraints:["1 ≤ n ≤ 10⁴","All elements are distinct","Array is sorted ascending"]},
-    {id:14,title:"Palindrome Check",cat:"DSA",diff:"Easy",tags:["String","Two Pointers"],accept:78,companies:["Microsoft"],desc:"Given a string s, return true if it is a palindrome, considering only alphanumeric characters and ignoring case.",ex:{i:"A man a plan a canal Panama",o:"true",e:"After filtering: amanaplanacanalpanama"},constraints:["1 ≤ |s| ≤ 2×10⁵"]},
-    {id:15,title:"OOP: Animal Class",cat:"OOP",diff:"Easy",tags:["Classes","Inheritance"],accept:80,companies:[],desc:"Design an Animal base class with speak() and move() virtual methods. Derive Dog (bark, runs) and Cat (meow, walks) from it.",ex:{i:"Dog d; Cat c; d.speak(); c.speak();",o:"Woof!\nMeow!",e:"Polymorphic dispatch calls the derived method."},constraints:["Must use virtual methods","No raw pointers — use references"]},
-    {id:16,title:"OOP: Stack with Templates",cat:"OOP",diff:"Easy",tags:["Classes","Templates"],accept:72,companies:[],desc:"Implement a generic Stack<T> class with push(), pop(), peek(), isEmpty(), and size() methods.",ex:{i:"Stack<int> s; s.push(1); s.push(2); s.pop();",o:"top=1, size=1",e:"pop removes the last pushed item."},constraints:["Use templates (not void*)","Throw exception on pop from empty stack"]},
-    {id:17,title:"Longest Palindromic Substring",cat:"DSA",diff:"Medium",tags:["DP","String"],accept:34,companies:["Microsoft","Amazon"],desc:"Given a string s, return the longest palindromic substring.",ex:{i:"babad",o:"bab",e:"'bab' and 'aba' are both valid answers."},constraints:["1 ≤ |s| ≤ 1000","s consists of digits and English letters"]},
-    {id:18,title:"Coin Change",cat:"DSA",diff:"Medium",tags:["DP","BFS"],accept:41,companies:["Amazon","Meta"],desc:"Given coin denominations and an amount, return the fewest coins needed to make up that amount, or -1 if impossible.",ex:{i:"coins=[1,5,11], amount=15",o:"3",e:"11+1+... no, 5+5+5=15 uses 3 coins"},constraints:["1 ≤ coins.length ≤ 12","1 ≤ amount ≤ 10⁴"]},
-    {id:19,title:"Number of Islands",cat:"DSA",diff:"Medium",tags:["DFS","BFS","Union Find"],accept:57,companies:["Amazon","Google"],desc:"Given an m×n binary grid of '1's (land) and '0's (water), count the number of islands.",ex:{i:"grid=[[1,1,0],[0,1,0],[0,0,1]]",o:"2",e:"Two groups of connected 1s."},constraints:["1 ≤ m, n ≤ 300","grid[i][j] is '0' or '1'"]},
-    {id:20,title:"LRU Cache",cat:"DSA",diff:"Medium",tags:["Hash Map","Design"],accept:43,companies:["Amazon","Meta"],desc:"Implement an LRU (Least Recently Used) cache with O(1) get() and put() operations.",ex:{i:"LRUCache(2); put(1,1); put(2,2); get(1); put(3,3); get(2);",o:"1, -1",e:"Key 2 was evicted when key 3 was inserted."},constraints:["1 ≤ capacity ≤ 3000","0 ≤ key, value ≤ 10⁴"]},
-    {id:21,title:"OOP: Shape Polymorphism",cat:"OOP",diff:"Medium",tags:["Virtual","Override"],accept:65,companies:[],desc:"Implement a Shape base class with a virtual area() method. Derive Circle, Rectangle, and Triangle.",ex:{i:"Circle c(5); Rectangle r(4,6);",o:"78.54\n24.00",e:"πr² and l×w"},constraints:["Use virtual/override","area() returns double","Use M_PI for π"]},
-    {id:22,title:"OOP: Operator Overloading",cat:"OOP",diff:"Medium",tags:["Operators","Classes"],accept:60,companies:[],desc:"Create a Complex number class with overloaded +, -, *, and == operators.",ex:{i:"Complex a(3,4), b(1,2); cout<<(a+b);",o:"4+6i",e:"Real parts add, imaginary parts add."},constraints:["Overload all 4 operators","Implement toString() method"]},
-    {id:23,title:"BFS Shortest Path",cat:"DSA",diff:"Medium",tags:["Graph","BFS"],accept:48,companies:["Google","Amazon"],desc:"Find the length of the shortest path between nodes src and dst in an unweighted undirected graph.",ex:{i:"n=5, edges=[[0,1],[1,2],[2,3],[0,4]], src=0, dst=3",o:"3",e:"0→1→2→3"},constraints:["1 ≤ n ≤ 10⁴","Graph may be disconnected"]},
-    {id:24,title:"Course Schedule",cat:"DSA",diff:"Medium",tags:["Graph","Topological Sort"],accept:48,companies:["Meta","Amazon"],desc:"There are n courses. Some have prerequisites. Determine if you can finish all courses (detect cycle in directed graph).",ex:{i:"n=2, prerequisites=[[1,0]]",o:"true",e:"Take course 0, then course 1."},constraints:["1 ≤ n ≤ 2000","0 ≤ prerequisites.length ≤ 5000"]},
-    {id:25,title:"Kth Largest Element",cat:"DSA",diff:"Medium",tags:["Heap","Quick Select"],accept:65,companies:["Amazon","Facebook"],desc:"Find the kth largest element in an unsorted array using a min-heap or QuickSelect.",ex:{i:"nums=[3,2,1,5,6,4], k=2",o:"5",e:"Sorted desc: [6,5,4,3,2,1], 2nd = 5"},constraints:["1 ≤ k ≤ n ≤ 10⁴","-10⁴ ≤ nums[i] ≤ 10⁴"]},
-    {id:26,title:"Trapping Rain Water",cat:"DSA",diff:"Hard",tags:["Array","Two Pointers"],accept:61,companies:["Google","Amazon"],desc:"Given n non-negative integers representing an elevation map, compute how much water it can trap after raining.",ex:{i:"[0,1,0,2,1,0,1,3,2,1,2,1]",o:"6",e:"6 units of rainwater are trapped."},constraints:["n == height.length","0 ≤ height[i] ≤ 10⁴"]},
-    {id:27,title:"Merge K Sorted Lists",cat:"DSA",diff:"Hard",tags:["Heap","Linked List"],accept:47,companies:["Google","Meta"],desc:"Merge k sorted linked lists into one sorted list and return it.",ex:{i:"lists=[[1,4,5],[1,3,4],[2,6]]",o:"[1,1,2,3,4,4,5,6]",e:"Merge all and sort."},constraints:["k == lists.length","0 ≤ k ≤ 10⁴","0 ≤ lists[i].length ≤ 500"]},
-    {id:28,title:"Word Ladder",cat:"DSA",diff:"Hard",tags:["BFS","Hash Map"],accept:38,companies:["Amazon","LinkedIn"],desc:"Given beginWord, endWord, and a wordList, return the number of words in the shortest transformation sequence, or 0 if impossible.",ex:{i:"beginWord='hit', endWord='cog', wordList=['hot','dot','dog','lot','log','cog']",o:"5",e:"hit→hot→dot→dog→cog"},constraints:["1 ≤ beginWord.length ≤ 10","All words have the same length"]},
-    {id:29,title:"N-Queens",cat:"DSA",diff:"Hard",tags:["Backtracking"],accept:72,companies:["Amazon","Google"],desc:"Place N non-attacking queens on an N×N chessboard. Return all distinct solutions.",ex:{i:"N=4",o:"[['.Q..','...Q','Q...','..Q.'],['..Q.','Q...','...Q','.Q..']]",e:"2 valid configurations for N=4."},constraints:["1 ≤ n ≤ 9"]},
-    {id:30,title:"Serialize Binary Tree",cat:"DSA",diff:"Hard",tags:["Tree","DFS","Design"],accept:55,companies:["Google","Facebook"],desc:"Design an algorithm to serialize and deserialize a binary tree.",ex:{i:"root=[1,2,3,null,null,4,5]",o:"'1,2,3,null,null,4,5'",e:"Any valid encoding that allows reconstruction."},constraints:["0 ≤ number of nodes ≤ 10⁴","-1000 ≤ Node.val ≤ 1000"]},
-    {id:31,title:"Median of Two Sorted Arrays",cat:"DSA",diff:"Expert",tags:["Binary Search","Array"],accept:38,companies:["Google","Amazon"],desc:"Find the median of two sorted arrays in O(log(m+n)) time.",ex:{i:"nums1=[1,3], nums2=[2]",o:"2.0",e:"Merged: [1,2,3], median = 2"},constraints:["nums1.length == m, nums2.length == n","0 ≤ m, n ≤ 1000"]},
-    {id:32,title:"Regular Expression Matching",cat:"DSA",diff:"Expert",tags:["DP","String"],accept:28,companies:["Google","Facebook"],desc:"Implement regex matching with '.' and '*' wildcards using dynamic programming.",ex:{i:"s='aab', p='c*a*b'",o:"true",e:"c* matches empty, a* matches 'aa', b matches 'b'"},constraints:["1 ≤ s.length ≤ 20","1 ≤ p.length ≤ 30"]},
-    {id:33,title:"Minimum Window Substring",cat:"DSA",diff:"Expert",tags:["Sliding Window","Hash Map"],accept:42,companies:["Google","Amazon"],desc:"Find the minimum window in s which contains all characters of t.",ex:{i:"s='ADOBECODEBANC', t='ABC'",o:"'BANC'",e:"The shortest window containing A, B, C."},constraints:["1 ≤ s.length, t.length ≤ 10⁵"]},
-    {id:34,title:"Alien Dictionary",cat:"DSA",diff:"Expert",tags:["Graph","Topological Sort"],accept:33,companies:["Airbnb","Facebook"],desc:"Find the character order from a sorted alien language dictionary using topological sort.",ex:{i:"words=['wrt','wrf','er','ett','rftt']",o:"'wertf'",e:"Derive char ordering from adjacent words."},constraints:["1 ≤ words.length ≤ 100","1 ≤ words[i].length ≤ 100"]},
-    {id:35,title:"Text Justification",cat:"DSA",diff:"Expert",tags:["String","Greedy"],accept:36,companies:["Google","Airbnb"],desc:"Format text such that each line has exactly maxWidth characters with full justification.",ex:{i:'words=["This","is","an","example"], maxWidth=16',o:'"This    is    an"\n"example         "',e:"Extra spaces distributed evenly."},constraints:["1 ≤ words.length ≤ 300","1 ≤ maxWidth ≤ 100"]},
+    {id:1,cat:"PF",diff:"Beginner",title:"Hello World",tags:["Output","Basics"],accept:99,companies:[],
+     desc:"Print exactly the text Hello, World! to the screen.",
+     ex:{i:"(none)",o:"Hello, World!",e:"Use print() in Python or cout in C++"},
+     constraints:["Output exactly: Hello, World!"]},
+    {id:2,cat:"PF",diff:"Beginner",title:"Sum of Two Numbers",tags:["Input","Arithmetic"],accept:97,companies:[],
+     desc:"Read two integers A and B. Print their sum.",
+     ex:{i:"3 7",o:"10",e:"3 + 7 = 10"},
+     constraints:["-10^9 <= A, B <= 10^9"]},
+    {id:3,cat:"PF",diff:"Beginner",title:"Odd or Even",tags:["Conditionals","Modulo"],accept:95,companies:[],
+     desc:"Given an integer N, print Odd if it is odd, Even if it is even.",
+     ex:{i:"7",o:"Odd",e:"7 mod 2 = 1, so Odd"},
+     constraints:["1 <= N <= 10^6"]},
+    {id:4,cat:"PF",diff:"Beginner",title:"Largest of Three",tags:["Conditionals","Comparison"],accept:93,companies:[],
+     desc:"Given three integers A, B, C, print the largest.",
+     ex:{i:"4 9 2",o:"9",e:"9 is the largest"},
+     constraints:["-10^6 <= A, B, C <= 10^6"]},
+    {id:5,cat:"PF",diff:"Beginner",title:"Sum from 1 to N",tags:["Loops","Arithmetic"],accept:94,companies:[],
+     desc:"Given N, print 1+2+3+...+N. You can use a loop or the formula N*(N+1)/2.",
+     ex:{i:"5",o:"15",e:"1+2+3+4+5 = 15"},
+     constraints:["1 <= N <= 10^6"]},
+    {id:6,cat:"PF",diff:"Beginner",title:"Factorial",tags:["Loops","Recursion"],accept:91,companies:[],
+     desc:"Compute N! using a loop or recursion. Print the result.",
+     ex:{i:"5",o:"120",e:"5*4*3*2*1 = 120"},
+     constraints:["0 <= N <= 12","Result fits in 64-bit integer"]},
+    {id:7,cat:"PF",diff:"Beginner",title:"Fibonacci Series",tags:["Loops","Sequences"],accept:90,companies:[],
+     desc:"Print the first N numbers of the Fibonacci sequence starting from 0.",
+     ex:{i:"7",o:"0 1 1 2 3 5 8",e:"Each number is the sum of the previous two"},
+     constraints:["1 <= N <= 30"]},
+    {id:8,cat:"PF",diff:"Beginner",title:"Prime Number Check",tags:["Loops","Math"],accept:88,companies:[],
+     desc:"Given N, print YES if it is prime, NO otherwise.",
+     ex:{i:"17",o:"YES",e:"17 is only divisible by 1 and 17"},
+     constraints:["2 <= N <= 10^6"]},
+    {id:9,cat:"PF",diff:"Beginner",title:"Reverse a String",tags:["Strings","Loops"],accept:92,companies:["Amazon"],
+     desc:"Given a string S, print it in reverse order.",
+     ex:{i:"hello",o:"olleh",e:"Reverse all characters"},
+     constraints:["1 <= length(S) <= 10^5"]},
+    {id:10,cat:"PF",diff:"Beginner",title:"Count Vowels",tags:["Strings","Loops"],accept:93,companies:[],
+     desc:"Count the total vowels (a, e, i, o, u) in a string. Case insensitive.",
+     ex:{i:"AlgoArena",o:"5",e:"A, o, A, e, a"},
+     constraints:["1 <= length(S) <= 10^5"]},
+    {id:11,cat:"PF",diff:"Beginner",title:"Multiplication Table",tags:["Loops","Output"],accept:96,companies:[],
+     desc:"Print the multiplication table of N from 1 to 10, space-separated.",
+     ex:{i:"3",o:"3 6 9 12 15 18 21 24 27 30",e:"3x1, 3x2 ... 3x10"},
+     constraints:["1 <= N <= 20"]},
+    {id:12,cat:"PF",diff:"Beginner",title:"Sum of Digits",tags:["Math","Loops"],accept:91,companies:[],
+     desc:"Given a positive integer N, print the sum of its digits.",
+     ex:{i:"1234",o:"10",e:"1+2+3+4 = 10"},
+     constraints:["1 <= N <= 10^9"]},
+    {id:13,cat:"PF",diff:"Beginner",title:"Palindrome String Check",tags:["Strings","Two Pointers"],accept:89,companies:["Microsoft"],
+     desc:"Check if a string is a palindrome. Print YES or NO. Ignore case.",
+     ex:{i:"Racecar",o:"YES",e:"racecar reads same forwards and backwards"},
+     constraints:["1 <= length(S) <= 10^5"]},
+    {id:14,cat:"PF",diff:"Beginner",title:"Pattern Printing Triangle",tags:["Loops","Patterns"],accept:90,companies:[],
+     desc:"Print a right-angled triangle of * with N rows. Row i has i stars.",
+     ex:{i:"4",o:"* ** *** ****",e:"Row 1: one star, Row 2: two stars, etc"},
+     constraints:["1 <= N <= 20"]},
+    {id:15,cat:"PF",diff:"Beginner",title:"Array Sum and Average",tags:["Arrays","Loops"],accept:94,companies:[],
+     desc:"Given N integers, print their sum and average rounded to 2 decimal places.",
+     ex:{i:"5 values: 10 20 30 40 50",o:"150 and 30.00",e:"Sum=150, Average=150/5=30.00"},
+     constraints:["1 <= N <= 10^5","-10^4 <= each value <= 10^4"]},
+    {id:16,cat:"PF",diff:"Beginner",title:"Min and Max in Array",tags:["Arrays","Comparison"],accept:95,companies:[],
+     desc:"Find and print the minimum and maximum value in an array of N integers.",
+     ex:{i:"5 values: 3 1 4 1 5",o:"min=1 max=5",e:"Scan array once"},
+     constraints:["1 <= N <= 10^5"]},
+    {id:17,cat:"PF",diff:"Beginner",title:"Linear Search",tags:["Arrays","Searching"],accept:92,companies:[],
+     desc:"Search for target X in array. Print its 0-based index or -1 if not found.",
+     ex:{i:"Array: 2 4 6 8 10, Target: 6",o:"2",e:"6 is at index 2"},
+     constraints:["1 <= N <= 10^5"]},
+    {id:18,cat:"PF",diff:"Beginner",title:"Bubble Sort",tags:["Arrays","Sorting"],accept:88,companies:[],
+     desc:"Implement bubble sort. Print the array sorted in ascending order.",
+     ex:{i:"5 3 8 1 2",o:"1 2 3 5 8",e:"Compare adjacent pairs, swap if out of order"},
+     constraints:["1 <= N <= 1000"]},
+    {id:19,cat:"PF",diff:"Beginner",title:"Selection Sort",tags:["Arrays","Sorting"],accept:87,companies:[],
+     desc:"Implement selection sort. Print the sorted array.",
+     ex:{i:"64 25 12 22",o:"12 22 25 64",e:"Find minimum, swap into position"},
+     constraints:["1 <= N <= 1000"]},
+    {id:20,cat:"PF",diff:"Beginner",title:"Count Occurrences",tags:["Arrays","Counting"],accept:91,companies:[],
+     desc:"Count how many times target X appears in an array of N integers.",
+     ex:{i:"Array: 1 2 3 2 4 2, Target: 2",o:"3",e:"2 appears 3 times"},
+     constraints:["1 <= N <= 10^5"]},
+    {id:21,cat:"DSA",diff:"Easy",title:"Two Sum",tags:["Arrays","Hash Map"],accept:73,companies:["Amazon","Google"],
+     desc:"Given an array and a target integer, return the two indices that add up to target. Use a hash map for O(n) time.",
+     ex:{i:"nums=[2,7,11,15] target=9",o:"[0,1]",e:"nums[0]+nums[1]=9"},
+     constraints:["2 <= n <= 10^4","Exactly one solution exists"]},
+    {id:22,cat:"DSA",diff:"Easy",title:"Valid Parentheses",tags:["Stack","Strings"],accept:40,companies:["Google","Amazon"],
+     desc:"Given a string of brackets (){}[], determine if it is valid and properly nested. Use a stack.",
+     ex:{i:"{[()]}",o:"true",e:"Every opening bracket has a correct matching closing bracket"},
+     constraints:["1 <= length(s) <= 10^4","s only contains brackets"]},
+    {id:23,cat:"DSA",diff:"Easy",title:"Maximum Subarray - Kadane",tags:["Arrays","Dynamic Programming"],accept:50,companies:["Amazon","Microsoft"],
+     desc:"Find the contiguous subarray with the largest sum. This is Kadane's algorithm.",
+     ex:{i:"[-2,1,-3,4,-1,2,1,-5,4]",o:"6",e:"[4,-1,2,1] has the largest sum of 6"},
+     constraints:["1 <= n <= 10^5","-10^4 <= nums[i] <= 10^4"]},
+    {id:24,cat:"DSA",diff:"Easy",title:"Binary Search",tags:["Searching","Divide and Conquer"],accept:55,companies:["Google","Microsoft"],
+     desc:"Implement binary search on a sorted array. Return the index of target or -1. Time complexity must be O(log n).",
+     ex:{i:"nums=[-1,0,3,5,9,12] target=9",o:"4",e:"9 is at index 4"},
+     constraints:["1 <= n <= 10^4","Array is sorted ascending","All elements distinct"]},
+    {id:25,cat:"DSA",diff:"Easy",title:"Reverse a Linked List",tags:["Linked List","Pointers"],accept:65,companies:["Amazon","Facebook"],
+     desc:"Reverse a singly linked list iteratively using three pointers: prev, curr, next.",
+     ex:{i:"1->2->3->4->5",o:"5->4->3->2->1",e:"prev=null, curr=head, move forward swapping next"},
+     constraints:["0 <= n <= 5000"]},
+    {id:26,cat:"DSA",diff:"Easy",title:"Merge Two Sorted Arrays",tags:["Arrays","Two Pointers"],accept:68,companies:["Google","Amazon"],
+     desc:"Merge two sorted arrays into one sorted array. Use two pointers for O(m+n) time.",
+     ex:{i:"A=[1,3,5] B=[2,4,6]",o:"[1,2,3,4,5,6]",e:"Compare front elements, take the smaller one"},
+     constraints:["0 <= m, n <= 10^4"]},
+    {id:27,cat:"DSA",diff:"Easy",title:"Stack Implementation",tags:["Stack","Arrays"],accept:80,companies:[],
+     desc:"Implement a stack using an array with push(), pop(), peek(), isEmpty(), size() operations.",
+     ex:{i:"push(1) push(2) peek() pop() isEmpty()",o:"2 then 2 then false",e:"LIFO - Last In First Out"},
+     constraints:["0 <= operations <= 10^4","Do not use built-in stack"]},
+    {id:28,cat:"DSA",diff:"Easy",title:"Queue Implementation",tags:["Queue","Arrays"],accept:79,companies:[],
+     desc:"Implement a queue using an array with enqueue(), dequeue(), front(), isEmpty() operations.",
+     ex:{i:"enqueue(1) enqueue(2) front() dequeue() isEmpty()",o:"1 then 1 then false",e:"FIFO - First In First Out"},
+     constraints:["0 <= operations <= 10^4","Do not use built-in queue"]},
+    {id:29,cat:"DSA",diff:"Easy",title:"Linked List Cycle Detection",tags:["Linked List","Two Pointers"],accept:45,companies:["Amazon"],
+     desc:"Use Floyd's cycle detection (slow and fast pointer) to detect if a linked list has a cycle.",
+     ex:{i:"3->2->0->-4->(back to 2)",o:"true",e:"Fast pointer catches slow inside the cycle"},
+     constraints:["0 <= n <= 10^4"]},
+    {id:30,cat:"DSA",diff:"Easy",title:"Character Frequency Count",tags:["Hash Map","Strings"],accept:82,companies:["Microsoft"],
+     desc:"Count frequency of each character in a string. Print them sorted alphabetically as char:count.",
+     ex:{i:"aabbcc",o:"a:2 b:2 c:2",e:"Use a map or array of size 26"},
+     constraints:["1 <= length(S) <= 10^5","Only lowercase letters"]},
+    {id:31,cat:"DSA",diff:"Medium",title:"Longest Palindromic Substring",tags:["Strings","Dynamic Programming"],accept:34,companies:["Microsoft","Amazon"],
+     desc:"Find the longest substring that is a palindrome. Expand around each character as center.",
+     ex:{i:"babad",o:"bab",e:"Expand around center - O(n^2) time"},
+     constraints:["1 <= length(s) <= 1000"]},
+    {id:32,cat:"DSA",diff:"Medium",title:"Coin Change - Minimum Coins",tags:["Dynamic Programming","Greedy"],accept:41,companies:["Amazon","Meta"],
+     desc:"Given coin denominations and an amount, find the minimum number of coins needed. Classic DP.",
+     ex:{i:"coins=[1,5,11] amount=15",o:"3",e:"5+5+5=15 uses only 3 coins"},
+     constraints:["1 <= coins.length <= 12","1 <= amount <= 10^4"]},
+    {id:33,cat:"DSA",diff:"Medium",title:"Number of Islands",tags:["Graphs","BFS","DFS"],accept:57,companies:["Amazon","Google"],
+     desc:"Count islands in a binary grid. An island is a group of connected 1s. Use BFS or DFS.",
+     ex:{i:"grid: [[1,1,0],[0,1,0],[0,0,1]]",o:"2",e:"Two connected groups of 1s"},
+     constraints:["1 <= rows, cols <= 300"]},
+    {id:34,cat:"DSA",diff:"Medium",title:"Binary Tree Level Order Traversal",tags:["Trees","BFS","Queue"],accept:62,companies:["Amazon","Microsoft"],
+     desc:"Print level-order BFS traversal of a binary tree, level by level, using a queue.",
+     ex:{i:"root=[3,9,20,null,null,15,7]",o:"[[3],[9,20],[15,7]]",e:"Use a queue, process each level completely"},
+     constraints:["0 <= nodes <= 2000"]},
+    {id:35,cat:"DSA",diff:"Medium",title:"Merge Sort",tags:["Sorting","Divide and Conquer","Recursion"],accept:60,companies:["Google"],
+     desc:"Implement merge sort to sort an array in ascending order. Time complexity: O(n log n).",
+     ex:{i:"[38,27,43,3,9,82,10]",o:"[3,9,10,27,38,43,82]",e:"Divide array in half, sort each, merge"},
+     constraints:["1 <= n <= 10^5"]},
+    {id:36,cat:"DSA",diff:"Medium",title:"Quick Sort",tags:["Sorting","Divide and Conquer","Recursion"],accept:58,companies:["Amazon"],
+     desc:"Implement quick sort using a pivot element. Average time: O(n log n).",
+     ex:{i:"[10,7,8,9,1,5]",o:"[1,5,7,8,9,10]",e:"Partition around pivot, recurse on both halves"},
+     constraints:["1 <= n <= 10^5"]},
+    {id:37,cat:"DSA",diff:"Medium",title:"Dijkstra Shortest Path",tags:["Graphs","Greedy","Priority Queue"],accept:48,companies:["Google","Amazon"],
+     desc:"Find shortest path from source to all vertices in a weighted graph. Use Dijkstra with min-heap.",
+     ex:{i:"5 nodes, source=0, edges: (0,1,4),(0,2,1),(2,1,2),(1,3,1)",o:"0 3 1 4 INF",e:"Use priority queue, relax edges"},
+     constraints:["1 <= V <= 10^4","All edge weights non-negative"]},
+    {id:38,cat:"DSA",diff:"Medium",title:"LRU Cache",tags:["Hash Map","Linked List","Design"],accept:43,companies:["Amazon","Meta"],
+     desc:"Design Least Recently Used cache with O(1) get and put using HashMap plus doubly linked list.",
+     ex:{i:"capacity=2, put(1,1), put(2,2), get(1), put(3,3), get(2)",o:"get(1)=1, get(2)=-1",e:"Key 2 evicted when key 3 inserted"},
+     constraints:["1 <= capacity <= 3000"]},
+    {id:39,cat:"DSA",diff:"Medium",title:"Course Schedule - Cycle Detection",tags:["Graphs","Topological Sort","DFS"],accept:48,companies:["Meta","Amazon"],
+     desc:"Given N courses with prerequisites, determine if you can finish all (detect cycle in directed graph).",
+     ex:{i:"n=2, prerequisites=[[1,0]]",o:"true",e:"Take course 0 then 1 - no cycle"},
+     constraints:["1 <= n <= 2000"]},
+    {id:40,cat:"DSA",diff:"Medium",title:"Longest Common Subsequence",tags:["Dynamic Programming","Strings"],accept:52,companies:["Google","Amazon"],
+     desc:"Find the length of the longest common subsequence of two strings using 2D DP table.",
+     ex:{i:"s1=ABCBDAB s2=BDCAB",o:"4",e:"BCAB has length 4"},
+     constraints:["1 <= length(s1), length(s2) <= 1000"]},
+    {id:41,cat:"OOP",diff:"Easy",title:"Classes and Objects - Student",tags:["Classes","Objects","Constructor"],accept:85,companies:[],
+     desc:"Create a Student class with name, rollNo, marks. Write a constructor and display() method.",
+     ex:{i:"Student s(Ali, 101, 85.5)",o:"Name: Ali | Roll: 101 | Marks: 85.5",e:"Class with constructor and method"},
+     constraints:["Use proper class syntax","Include a constructor"]},
+    {id:42,cat:"OOP",diff:"Easy",title:"Inheritance - Vehicle",tags:["Inheritance","Base Class","Derived Class"],accept:80,companies:[],
+     desc:"Create Vehicle base class with speed and fuel. Derive Car and Bike from it with unique describe() method.",
+     ex:{i:"Car c(120, Petrol); c.describe()",o:"Car: 120 km/h, Petrol",e:"Base class derives to child classes"},
+     constraints:["Must use inheritance","No code duplication"]},
+    {id:43,cat:"OOP",diff:"Easy",title:"Encapsulation - BankAccount",tags:["Encapsulation","Getters","Setters"],accept:82,companies:[],
+     desc:"Design BankAccount with private balance. Only expose deposit(), withdraw(), getBalance(). Validate no negative balance.",
+     ex:{i:"deposit(1000), withdraw(200), getBalance()",o:"800",e:"Private data, public interface only"},
+     constraints:["Balance cannot go below 0","Use private member variables"]},
+    {id:44,cat:"OOP",diff:"Medium",title:"Polymorphism - Shape Area",tags:["Polymorphism","Virtual","Override"],accept:72,companies:[],
+     desc:"Create abstract Shape with virtual area(). Derive Circle, Rectangle, Triangle. Call area() via base pointer.",
+     ex:{i:"Shape* s = new Circle(5); s->area()",o:"78.54",e:"Virtual function dispatch"},
+     constraints:["Must use virtual functions","Must use base class pointer"]},
+    {id:45,cat:"OOP",diff:"Medium",title:"Operator Overloading - Complex Numbers",tags:["Operator Overloading","Math"],accept:68,companies:[],
+     desc:"Create Complex class with overloaded +, -, * operators and << for printing.",
+     ex:{i:"Complex a(3,4), b(1,2); cout<<a+b",o:"4+6i",e:"Real and imaginary parts add separately"},
+     constraints:["Overload all 3 operators","Include << operator"]},
+    {id:46,cat:"OOP",diff:"Medium",title:"Templates - Generic Stack",tags:["Templates","Generics","Stack"],accept:70,companies:[],
+     desc:"Implement a generic Stack<T> class using C++ templates that works with int, float, and string.",
+     ex:{i:"Stack<int> s; s.push(1); s.push(2); s.pop()",o:"2",e:"Template allows any data type"},
+     constraints:["Must use C++ templates","Handle empty stack with exception"]},
+    {id:47,cat:"OOP",diff:"Medium",title:"File Handling - Student Records",tags:["File IO","Classes"],accept:65,companies:[],
+     desc:"Save student name and marks to a file, then read and display them. Use fstream.",
+     ex:{i:"Save Ali 90 and Sara 85, then read file",o:"Ali 90 then Sara 85",e:"Use ofstream to write, ifstream to read"},
+     constraints:["Use fstream","Handle file not found error"]},
+    {id:48,cat:"DSA",diff:"Hard",title:"Trapping Rain Water",tags:["Arrays","Two Pointers","Stack"],accept:61,companies:["Google","Amazon"],
+     desc:"Calculate water trapped between elevation bars after rain. Classic two-pointer O(n) solution.",
+     ex:{i:"[0,1,0,2,1,0,1,3,2,1,2,1]",o:"6",e:"For each bar: min(maxLeft, maxRight) - height[i]"},
+     constraints:["0 <= height[i] <= 10^4"]},
+    {id:49,cat:"DSA",diff:"Hard",title:"N-Queens Problem",tags:["Backtracking","Recursion"],accept:72,companies:["Amazon","Google"],
+     desc:"Place N non-attacking queens on N x N board. Return count of valid placements. Classic backtracking.",
+     ex:{i:"4",o:"2",e:"Try each column, backtrack if queens attack each other"},
+     constraints:["1 <= N <= 12"]},
+    {id:50,cat:"DSA",diff:"Hard",title:"Word Ladder - BFS",tags:["Graphs","BFS","Strings"],accept:38,companies:["Amazon","LinkedIn"],
+     desc:"Find shortest transformation from beginWord to endWord changing one letter at a time. Use BFS.",
+     ex:{i:"begin=hit end=cog dict=[hot,dot,dog,lot,log,cog]",o:"5",e:"hit->hot->dot->dog->cog"},
+     constraints:["All words have same length","1 <= word length <= 10"]},
+    {id:51,cat:"DSA",diff:"Hard",title:"Binary Tree Maximum Path Sum",tags:["Trees","DFS","Dynamic Programming"],accept:39,companies:["Google","Airbnb"],
+     desc:"Find the maximum sum path in a binary tree. Path can start and end at any node.",
+     ex:{i:"root=[-10,9,20,null,null,15,7]",o:"42",e:"Path 15->20->7 has sum 42"},
+     constraints:["0 <= nodes <= 30000","-1000 <= node value <= 1000"]},
+    {id:52,cat:"DSA",diff:"Hard",title:"Merge K Sorted Lists",tags:["Heap","Linked List","Priority Queue"],accept:47,companies:["Google","Meta"],
+     desc:"Merge k sorted linked lists into one. Use a min-heap for O(N log k) time complexity.",
+     ex:{i:"[[1,4,5],[1,3,4],[2,6]]",o:"[1,1,2,3,4,4,5,6]",e:"Push head of each list to min-heap"},
+     constraints:["0 <= k <= 10^4","0 <= list length <= 500"]},
+    {id:53,cat:"DSA",diff:"Expert",title:"Median of Two Sorted Arrays",tags:["Binary Search","Arrays"],accept:38,companies:["Google","Amazon"],
+     desc:"Find median of two sorted arrays in O(log(m+n)) time. Hardest binary search problem.",
+     ex:{i:"nums1=[1,3] nums2=[2]",o:"2.0",e:"Binary search on the smaller array"},
+     constraints:["0 <= m, n <= 1000"]},
+    {id:54,cat:"DSA",diff:"Expert",title:"Regular Expression Matching",tags:["Dynamic Programming","Strings","Recursion"],accept:28,companies:["Google","Facebook"],
+     desc:"Implement regex matching with . (any char) and * (zero or more). Use 2D DP.",
+     ex:{i:"s=aab p=c*a*b",o:"true",e:"c* matches empty, a* matches aa, b matches b"},
+     constraints:["1 <= s length <= 20","1 <= p length <= 30"]},
+    {id:55,cat:"DSA",diff:"Expert",title:"Minimum Window Substring",tags:["Sliding Window","Hash Map","Two Pointers"],accept:42,companies:["Google","Amazon"],
+     desc:"Find smallest window in S containing all characters of T. O(n) sliding window solution.",
+     ex:{i:"S=ADOBECODEBANC T=ABC",o:"BANC",e:"Expand right until covered, shrink left"},
+     constraints:["1 <= length(S), length(T) <= 10^5"]}
   ],
 
-  leaderboard: [
-    {rank:1,name:"Gennady K.",handle:"tourist",uni:"Moscow State University",country:"🇷🇺",rating:3979,solved:1847,badge:"Legendary"},
-    {rank:2,name:"Jiangly",handle:"jiangly",uni:"Peking University",country:"🇨🇳",rating:3643,solved:1389,badge:"Legendary"},
-    {rank:3,name:"Petr M.",handle:"Petr",uni:"ITMO University",country:"🇷🇺",rating:3442,solved:1187,badge:"Grandmaster"},
-    {rank:4,name:"Hamza Ali",handle:"hamza_cp",uni:"FAST-NUCES Lahore",country:"🇵🇰",rating:2340,solved:687,badge:"Master"},
-    {rank:5,name:"Priya Sharma",handle:"priya_algo",uni:"IIT Bombay",country:"🇮🇳",rating:2198,solved:541,badge:"Master"},
-    {rank:6,name:"Ahmed Raza",handle:"ahmed_r",uni:"NUST Islamabad",country:"🇵🇰",rating:2054,solved:478,badge:"Expert"},
-    {rank:7,name:"Liu Wei",handle:"liu_cp",uni:"Tsinghua University",country:"🇨🇳",rating:1987,solved:412,badge:"Expert"},
-    {rank:8,name:"Sara Khan",handle:"sara_k",uni:"CUST Islamabad",country:"🇵🇰",rating:1872,solved:365,badge:"Expert"},
-    {rank:9,name:"Kim Jiyeon",handle:"kim_sw",uni:"KAIST",country:"🇰🇷",rating:1754,solved:312,badge:"Specialist"},
-    {rank:10,name:"Ayesha Malik",handle:"ayesha_m",uni:"LUMS Lahore",country:"🇵🇰",rating:1698,solved:287,badge:"Specialist"},
-    {rank:11,name:"Carlos Rivera",handle:"carlos_r",uni:"MIT",country:"🇺🇸",rating:1645,solved:261,badge:"Specialist"},
-    {rank:12,name:"Fatima Zahra",handle:"fatima_z",uni:"IBA Karachi",country:"🇵🇰",rating:1590,solved:234,badge:"Specialist"},
-  ],
+  leaderboard: [],
 
   contests: [
     {id:1,title:"Weekly Rated #88",type:"Rated",status:"live",participants:1247,duration:90,problems:4,difficulty:"Mixed",prize:"2x Rating Boost",desc:"4 problems covering arrays, DP and graphs. Open to all users."},
@@ -1237,7 +1435,11 @@ function openLogin(){
     var u=DB.users.find(function(u){return u.email===email&&u.pass===pass});
     if(!u&&email==='demo@fast.edu.pk'&&pass==='demo123'){u=makeDemoUser();DB.users.push(u);saveData()}
     if(!u){e.textContent='Incorrect email or password.';e.style.display='block';return}
-    DB.currentUser=u;saveSession(u);closeOverlay();launchApp();
+    DB.currentUser=u;
+    saveSession(u); // refresh session
+    saveData();     // update activeEmail
+    closeOverlay();
+    launchApp();
   });
   btn.style.marginBottom='.75rem';w.appendChild(btn);
 
@@ -1367,8 +1569,21 @@ function openRegister(){
     if(handle.indexOf(' ')!==-1){e.textContent='Username cannot contain spaces.';e.style.display='block';return}
     if(DB.users.find(function(u){return u.email===email})){e.textContent='Email already registered.';e.style.display='block';return}
     var initials=name.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase();
-    var nu={name:name,handle:handle,email:email,phone:phone,uni:uni,lang:lang,pass:pass,rating:800,solved:0,streak:0,joined:new Date().getFullYear().toString(),avatar:initials,badge:'Pupil',stats:{beginner:0,easy:0,medium:0,hard:0,expert:0},lastActive:Date.now()};
-    DB.users.push(nu);DB.currentUser=nu;saveData();saveSession(nu);closeOverlay();launchApp();
+    var nu={
+      name:name,handle:handle,email:email,phone:phone,uni:uni,lang:lang,pass:pass,
+      rating:800,solved:0,streak:0,
+      joined:new Date().getFullYear().toString(),
+      avatar:initials,badge:'Pupil',plan:'free',country:'🌍',
+      lastSolvedDate:null,
+      stats:{beginner:0,easy:0,medium:0,hard:0,expert:0},
+      lastActive:Date.now()
+    };
+    DB.users.push(nu);
+    DB.currentUser=nu;
+    saveData();      // saves users + activeEmail
+    saveSession(nu); // saves session key
+    closeOverlay();
+    launchApp();
   });
   btn.style.marginTop='1.25rem';w.appendChild(btn);
 
@@ -1381,15 +1596,30 @@ function openRegister(){
 }
 
 function makeDemoUser(){
-  return{name:'Demo User',email:'demo@fast.edu.pk',handle:'demo_user',phone:'',uni:'FAST-NUCES (Lahore)',lang:'C++',pass:'demo123',rating:850,solved:3,streak:1,joined:'2025',avatar:'DU',badge:'Pupil',stats:{beginner:2,easy:1,medium:0,hard:0,expert:0},lastActive:Date.now()};
+  return{name:'Demo User',email:'demo@fast.edu.pk',handle:'demo_user',
+    phone:'',uni:'FAST-NUCES (Lahore)',lang:'C++',pass:'demo123',
+    rating:850,solved:3,streak:1,joined:'2025',avatar:'DU',badge:'Pupil',
+    plan:'free',country:'🌍',lastSolvedDate:null,
+    stats:{beginner:2,easy:1,medium:0,hard:0,expert:0},lastActive:Date.now()};
 }
 
 function logOut(){
-  if(!confirm('Sign out?'))return;
-  DB.currentUser=null;clearSession();
+  if(!confirm('Sign out of AlgoArena? You will need to sign in again next time.')) return;
+  // Clear all session data
+  DB.currentUser = null;
+  clearSession();
+  // Clear the activeEmail from the data blob too
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      var d = JSON.parse(raw);
+      d.activeEmail = null;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    }
+  } catch(e) {}
   $('appShell').style.display='none';
   $('landingPage').style.display='block';
-  showToast('Signed out','See you next time!','info');
+  showToast('Signed out','Sign in any time to continue!','info');
 }
 
 function showContact(){
@@ -1422,15 +1652,36 @@ function showPolicy(type){
 // ============================================================
 function launchApp(){
   var u=DB.currentUser;
+  if(!u) return;
+
+  // Always save session on every launch (keeps it fresh)
+  saveSession(u);
+  saveData(); // Persist activeEmail
+
   $('landingPage').style.display='none';
   $('appShell').style.display='flex';
+
+  // Rebuild avatar from name if missing
+  if(!u.avatar || u.avatar==='?') {
+    u.avatar = u.name.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase() || 'U';
+  }
   $('sbAv').textContent=u.avatar;
   $('sbName').textContent=u.name;
   var planLabel = u.plan && u.plan !== 'free' ? ' · ' + u.plan.toUpperCase() + ' ✦' : '';
-  $('sbRating').textContent=u.rating+' pts · '+u.badge + planLabel;
-  $('streakEl').textContent=u.streak>0?'🔥 '+u.streak+'-day streak':'';
+  $('sbRating').textContent=(u.rating||800)+' pts · '+(u.badge||'Pupil')+planLabel;
+
+  // Streak check on every login
+  var todayStr = new Date().toDateString();
+  var yestStr  = new Date(Date.now()-86400000).toDateString();
+  if(u.lastSolvedDate && u.lastSolvedDate !== todayStr && u.lastSolvedDate !== yestStr){
+    // Streak broken — more than 1 day gap
+    u.streak = 0;
+    saveData();
+  }
+  $('streakEl').textContent = u.streak>0 ? '🔥 '+u.streak+'-day streak' : '';
+
   goTo('dashboard');
-  showToast('Welcome, '+u.name.split(' ')[0]+'! 👋','Ready to code?','success');
+  showToast('Welcome back, '+u.name.split(' ')[0]+'!','',  'success');
   startTimers();
   var als=document.getElementById('appLangSel');
   if(als)als.value=LANG;
@@ -1470,7 +1721,9 @@ function buildDash(){
   c.appendChild(mk('h2','font-size:22px;font-weight:800;margin-bottom:.4rem','Good day, '+u.name.split(' ')[0]+' 👋'));
   c.appendChild(mkd('font-size:13px;color:var(--mu);margin-bottom:1.75rem',u.streak>0?'You\'re on a '+u.streak+'-day streak. Don\'t break it!':'Start solving today to build your streak!'));
 
-  var lbPos=DB.leaderboard.findIndex(function(x){return x.handle===u.handle});
+  // Rank from all registered users
+  var allForRank=DB.users.slice().sort(function(a,b){return(b.rating||800)-(a.rating||800)});
+  var lbPos=allForRank.findIndex(function(x){return x.email===u.email});
   var sg=mkd('display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem');
   [{lbl:'Solved',val:u.solved||0,sub:'All time'},{lbl:'Rating',val:u.rating,sub:u.badge},{lbl:'Global Rank',val:lbPos>=0?'#'+(lbPos+1):'Unranked',sub:'Compete to rank'},{lbl:'Streak',val:(u.streak||0)+'d',sub:'Daily grind'}].forEach(function(s){
     var sc=mkd('background:var(--s1);border:1px solid var(--b1);border-radius:var(--r16);padding:1.25rem 1.4rem;transition:border-color .2s');
@@ -1936,6 +2189,37 @@ function buildContestDetail(contest){
 // ============================================================
 function buildLB(){
   var c=$('lbBody');c.innerHTML='';
+  // Build ONLY from real registered users
+  var realUsers=DB.users.map(function(u){
+    return{rank:0,name:u.name,handle:u.handle,uni:u.uni||'Unknown',
+           country:u.country||'🌍',rating:u.rating||800,
+           solved:u.solved||0,badge:u.badge||'Pupil',
+           isMe:!!(DB.currentUser&&u.email===DB.currentUser.email)};
+  });
+  // Always include current user
+  if(DB.currentUser){
+    var cu=DB.currentUser;
+    var exists=realUsers.find(function(x){return x.handle===cu.handle;});
+    if(!exists) realUsers.push({rank:0,name:cu.name,handle:cu.handle,
+      uni:cu.uni||'Unknown',country:cu.country||'🌍',rating:cu.rating||800,
+      solved:cu.solved||0,badge:cu.badge||'Pupil',isMe:true});
+    else exists.isMe=true;
+  }
+  realUsers.sort(function(a,b){return b.rating-a.rating;});
+  realUsers.forEach(function(u,i){u.rank=i+1;});
+  // Empty state
+  if(realUsers.length===0){
+    var empty=document.createElement('div');
+    empty.style.cssText='text-align:center;padding:5rem 2rem;background:var(--s1);border:1px solid var(--b1);border-radius:var(--r16)';
+    var emo=document.createElement('div');emo.style.fontSize='56px';emo.textContent='🏆';
+    var t1=document.createElement('h3');t1.style.cssText='font-size:20px;font-weight:800;margin:.75rem 0 .5rem';t1.textContent='No competitors yet!';
+    var t2=document.createElement('p');t2.style.cssText='font-size:14px;color:var(--mu);max-width:400px;margin:0 auto 1.5rem;line-height:1.7';
+    t2.textContent='Be the first on AlgoArena! Register, solve problems, and your name will appear here for everyone to see.';
+    var btn=document.createElement('button');btn.className='btn btn-p';btn.textContent='Start Solving Now';
+    btn.onclick=function(){goTo('problems');};
+    empty.appendChild(emo);empty.appendChild(t1);empty.appendChild(t2);empty.appendChild(btn);
+    c.appendChild(empty);return;
+  }
   // Uni filter chips
   var uniRow=mkd('chip-row');uniRow.className='chip-row mb3';
   var unis=['All','Pakistan','India','China','USA','Europe'];
@@ -1943,10 +2227,10 @@ function buildLB(){
     var ch=mkb('chip'+((DB.lbUniFilter||'All')===u?' on':''),u,function(){DB.lbUniFilter=u;buildLB()});uniRow.appendChild(ch);
   });
   c.appendChild(uniRow);
-  renderLB();
+  renderLB(realUsers);
 }
 
-function renderLB(){
+function renderLB(passedData){
   // Remove old list if re-rendering
   var old=$('lbList');if(old)old.remove();
   var c=$('lbBody');
@@ -1955,18 +2239,7 @@ function renderLB(){
   var u=DB.currentUser;
 
   var countryMap={Pakistan:'🇵🇰',India:'🇮🇳',China:'🇨🇳',USA:'🇺🇸',Europe:'🇪🇺'};
-  var data=DB.leaderboard.slice();
-
-  // Add current user to leaderboard dynamically (don't inject fake entries)
-  if(u){
-    var inList=data.find(function(x){return x.handle===u.handle});
-    if(inList){inList.isMe=true;inList.rating=u.rating;inList.solved=u.solved||0;inList.badge=u.badge;inList.uni=u.uni}
-    else{
-      data.push({rank:data.length+1,name:u.name,handle:u.handle,uni:u.uni,country:'🌍',rating:u.rating,solved:u.solved||0,badge:u.badge,isMe:true});
-    }
-    data.sort(function(a,b){return b.rating-a.rating});
-    data.forEach(function(x,i){x.rank=i+1});
-  }
+  var data=passedData?passedData.slice():[];
 
   if(DB.lbUniFilter&&DB.lbUniFilter!=='All'){
     var flag=countryMap[DB.lbUniFilter]||DB.lbUniFilter;
@@ -2379,11 +2652,20 @@ function buildSettings(){
   c.appendChild(langUiRow);
   var div2=mkd('display:flex;gap:1rem;flex-wrap:wrap');
   var save=mkb('btn btn-p','Save Changes',function(){
-    u.name=$('s-name').value||u.name;u.handle=$('s-handle').value||u.handle;
-    u.email=$('s-email').value||u.email;u.phone=$('s-phone').value;u.uni=$('s-uni').value;
-    $('sbName').textContent=u.name;$('sbAv').textContent=u.name.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase();
-    var planLabel = u.plan && u.plan !== 'free' ? ' · ' + u.plan.toUpperCase() + ' ✦' : '';
-  $('sbRating').textContent=u.rating+' pts · '+u.badge + planLabel;saveData();showToast('Settings saved!','Profile updated successfully.','success');
+    var newName=($('s-name').value||'').trim()||u.name;
+    var newHandle=($('s-handle').value||'').trim()||u.handle;
+    var newEmail=($('s-email').value||'').trim()||u.email;
+    if(newHandle.indexOf(' ')!==-1){showToast('Invalid','Username cannot have spaces.','error');return;}
+    u.name=newName; u.handle=newHandle; u.email=newEmail;
+    u.phone=($('s-phone').value||'').trim(); u.uni=$('s-uni').value;
+    u.avatar=u.name.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase()||'U';
+    $('sbAv').textContent=u.avatar;
+    $('sbName').textContent=u.name;
+    var planLabel=u.plan&&u.plan!=='free'?' · '+u.plan.toUpperCase()+' ✦':'';
+    $('sbRating').textContent=(u.rating||800)+' pts · '+(u.badge||'Pupil')+planLabel;
+    saveData();
+    saveSession(u);
+    showToast('Saved!','Profile updated successfully.','success');
   });
   var del=mkb('btn btn-danger','Delete Account',function(){if(confirm('Delete your account? This cannot be undone.'))logOut()});
   div2.appendChild(save);div2.appendChild(del);c.appendChild(div2);
@@ -2440,19 +2722,21 @@ function initHeroCanvas(){
   // Build pricing cards
   setTimeout(function(){ buildPricingCards(); }, 0);
   var feats=[
-    {icon:'🧠',title:'AI Mentor',desc:'Line-by-line feedback. Pattern recognition. Hints that teach you to think — not just pass.'},
-    {icon:'🏫',title:'University Tracks',desc:'PF, OOP, DSA aligned with FAST, CUST, NUST, LUMS and 120+ universities worldwide.'},
-    {icon:'🏆',title:'Live Contests',desc:'Weekly rated competitions, university-specific cups, and FAANG interview sims.'},
-    {icon:'🌍',title:'Global Leaderboard',desc:'See who\'s competing from your university. Filter by country or institution.'},
-    {icon:'💼',title:'Interview Prep',desc:'500+ problems tagged by company. Google, Amazon, Meta — prep exactly where it matters.'},
-    {icon:'⚡',title:'8 Languages',desc:'C++, Python, Java, JavaScript, Rust, Go, C# and Kotlin. Your language, your rules.'},
+    {icon:'AI',title:'AI Mentor',desc:'Line-by-line feedback and pattern recognition. Hints that teach you to think, not just memorize.'},
+    {icon:'UNI',title:'University Tracks',desc:'PF, OOP, DSA aligned with FAST, CUST, NUST, LUMS and 120+ universities worldwide.'},
+    {icon:'CUP',title:'Live Contests',desc:'Weekly rated competitions, university-specific cups, and FAANG interview simulations.'},
+    {icon:'TOP',title:'Global Leaderboard',desc:'See who is competing from your university. Filter by country or institution.'},
+    {icon:'JOB',title:'Interview Prep',desc:'500+ problems tagged by company. Google, Amazon, Meta — prep exactly where it matters.'},
+    {icon:'</>',title:'8 Languages',desc:'C++, Python, Java, JavaScript, Rust, Go, C# and Kotlin. Your language, your rules.'}
   ];
   var fg=$('featGrid');
   if(fg)feats.forEach(function(f){
     var card=mkd('background:var(--s1);border:1px solid var(--b1);border-radius:var(--r16);padding:1.5rem;transition:all .22s;cursor:pointer');
     card.onmouseenter=function(){this.style.borderColor='var(--b2)';this.style.transform='translateY(-3px)'};
     card.onmouseleave=function(){this.style.borderColor='var(--b1)';this.style.transform=''};
-    card.appendChild(mkd('font-size:28px;margin-bottom:.75rem',f.icon));
+    var iconWrap=mkd('display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:var(--r12);background:rgba(110,72,255,.12);border:1px solid var(--b2);margin-bottom:.9rem;font-size:11px;font-weight:800;letter-spacing:.04em',f.icon);
+    iconWrap.style.cssText+='background:rgba(110,72,255,.12);border:1px solid var(--b2);color:var(--vl)';
+    card.appendChild(iconWrap);
     card.appendChild(mk('h3','font-size:15px;font-weight:700;margin-bottom:.5rem',f.title));
     card.appendChild(mkd('font-size:12px;color:var(--mu);line-height:1.75',f.desc));
     fg.appendChild(card);
@@ -2478,20 +2762,51 @@ function initHeroCanvas(){
     var lbl=document.getElementById('navLangLabel');
     if(lbl && LANG && labels[LANG]) lbl.textContent=labels[LANG];
   })();
-  // Auto-login from saved session
+  // ── PERSISTENT LOGIN — triple-layer restore ──────────────────────────
+  // 1. Load all saved data (users, states, bookmarks, activeEmail)
   loadData();
-  var sess=loadSession();
-  if(sess){
-    var u=DB.users.find(function(u){return u.email===sess.email&&u.pass===sess.pass});
-    if(u){DB.currentUser=u;launchApp()}
+
+  // 2. Try restoring from activeEmail saved inside the data blob
+  if (DB.currentUser) {
+    // Already restored by loadData() — go straight to app
+    launchApp();
+    return;
   }
+
+  // 3. Fallback: use session key
+  var sess = loadSession();
+  if (sess && sess.email) {
+    var found = DB.users.find(function(u){
+      return u.email === sess.email && u.pass === sess.pass;
+    });
+    if (found) {
+      DB.currentUser = found;
+      launchApp();
+      return;
+    }
+  }
+
+  // 4. Last resort: check backup key
+  var backupEmail = null;
+  try { backupEmail = localStorage.getItem('aa_active_user'); } catch(e) {}
+  if (backupEmail) {
+    var backupUser = DB.users.find(function(u){ return u.email === backupEmail; });
+    if (backupUser) {
+      DB.currentUser = backupUser;
+      // Re-save proper session
+      saveSession(backupUser);
+      launchApp();
+      return;
+    }
+  }
+
+  // 5. No session found — show landing page (user needs to sign in)
+  // Landing page is already visible by default, nothing to do
 })();
 
 // Track active problem for test cases
 var origOpenSolve=openSolve;
 openSolve=function(p){DB.activeProblem=p;DB.currentPage='solve';origOpenSolve(p)};
-
-// Patch goTo to track current page
 var origGoTo=goTo;
 goTo=function(page,extra){DB.currentPage=page;origGoTo(page,extra)};
 </script>
