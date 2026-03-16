@@ -693,7 +693,7 @@ function openPayment(plan){
   var txInp = document.createElement('input');
   txInp.id = 'pay-txid';
   txInp.type = 'text';
-  txInp.placeholder = 'e.g. EP2025031512345678';
+  txInp.placeholder = 'e.g. EP20250315123 (copy from EasyPaisa app)';
   txInp.className = 'finp';
   txInp.style.marginBottom = '.75rem';
   txBox.appendChild(txLbl); txBox.appendChild(txInp);
@@ -708,6 +708,10 @@ function openPayment(plan){
   nameInp.className = 'finp';
   if(isLoggedIn && DB.currentUser) nameInp.value = DB.currentUser.name;
   txBox.appendChild(noteLbl); txBox.appendChild(nameInp);
+  var txHelp = document.createElement('div');
+  txHelp.style.cssText = 'font-size:11px;color:var(--mu);margin-top:.75rem;line-height:1.7;padding:.6rem .75rem;background:var(--s2);border-radius:var(--r8);border:1px solid var(--b1)';
+  txHelp.innerHTML = '<b style="color:var(--vl)">Where to find your TxID:</b><br>Open EasyPaisa app &rarr; Tap the hamburger menu &rarr; Transaction History &rarr; Find your payment &rarr; Copy the Transaction ID (looks like: EP20250315XXXXXX)';
+  txBox.appendChild(txHelp);
   w.appendChild(txBox);
 
   var err = document.createElement('div');
@@ -720,21 +724,60 @@ function openPayment(plan){
   submitBtn.textContent = 'Submit Payment & Activate ' + plan.name;
   submitBtn.onclick = function(){
     var email = document.getElementById('pay-email').value.trim();
-    var txid = document.getElementById('pay-txid').value.trim();
-    var name = document.getElementById('pay-name').value.trim();
+    var txid  = document.getElementById('pay-txid').value.trim().replace(/\s+/g,'');
+    var name  = document.getElementById('pay-name').value.trim();
     var errEl = document.getElementById('payErr');
-    if(!email){ errEl.textContent='Please enter your email.'; errEl.style.display='block'; return; }
-    var cleanTx = txid.replace(/\s/g,'');
-    if(!cleanTx || cleanTx.length < 8){
-      errEl.textContent='Transaction ID too short. EasyPaisa TxIDs are usually 10-20 characters. Check your EasyPaisa app under Transaction History.';
+    errEl.style.display='none';
+
+    // ── Field checks ──────────────────────────────────────────────────
+    if(!email || email.indexOf('@')===-1){
+      errEl.textContent='Enter a valid email address.';
       errEl.style.display='block'; return;
     }
-    if(!/^[A-Za-z0-9]+$/.test(cleanTx)){
-      errEl.textContent='Transaction ID should only contain letters and numbers. No spaces or special characters.';
+    if(!name || name.length < 2){
+      errEl.textContent='Enter your full name (as it appears on EasyPaisa).';
       errEl.style.display='block'; return;
     }
-    txid = cleanTx;
-    if(!name){ errEl.textContent='Please enter your name.'; errEl.style.display='block'; return; }
+    if(!txid){
+      errEl.textContent='Enter your EasyPaisa Transaction ID. Find it in the EasyPaisa app under Transaction History.';
+      errEl.style.display='block'; return;
+    }
+
+    // ── Real TxID format rules ────────────────────────────────────────
+    // EasyPaisa TxIDs are 10-20 characters and ALWAYS contain digits
+    if(txid.length < 10){
+      errEl.textContent='Transaction ID is too short (minimum 10 characters). Copy it exactly from your EasyPaisa app.';
+      errEl.style.display='block'; return;
+    }
+    if(txid.length > 25){
+      errEl.textContent='Transaction ID is too long. Copy it exactly from your EasyPaisa app.';
+      errEl.style.display='block'; return;
+    }
+    // Must contain at least one digit — real TxIDs always have numbers
+    if(!/[0-9]/.test(txid)){
+      errEl.textContent='Invalid Transaction ID — a real EasyPaisa TxID always contains numbers. Example: EP123456789. Please copy it from your EasyPaisa app.';
+      errEl.style.display='block'; return;
+    }
+    // Must contain at least one letter
+    if(!/[A-Za-z]/.test(txid)){
+      errEl.textContent='Invalid Transaction ID — a real EasyPaisa TxID contains both letters and numbers. Please copy it from your EasyPaisa app.';
+      errEl.style.display='block'; return;
+    }
+    // Only letters, digits, hyphens allowed
+    if(!/^[A-Za-z0-9\-]+$/.test(txid)){
+      errEl.textContent='Transaction ID should only contain letters, numbers, and hyphens. Copy it exactly from your EasyPaisa app.';
+      errEl.style.display='block'; return;
+    }
+    // Block obvious fake entries
+    var fakePhrases = ['test','fake','abc','xyz','hello','pakistan','afghanistan','lahore','karachi','dummy','none','null','trial','sample'];
+    var txLower = txid.toLowerCase();
+    for(var fi=0;fi<fakePhrases.length;fi++){
+      if(txLower === fakePhrases[fi] || txLower.indexOf(fakePhrases[fi])===0 && txid.length < 12){
+        errEl.textContent='This does not look like a real EasyPaisa Transaction ID. Open EasyPaisa app, go to Transaction History, copy the exact TxID from your payment.';
+        errEl.style.display='block'; return;
+      }
+    }
+
     processPayment(plan, email, txid, name);
   };
   w.appendChild(submitBtn);
@@ -748,11 +791,11 @@ function openPayment(plan){
 }
 
 function processPayment(plan, email, txid, name){
-  // ── VALIDATION: TxID must look like a real EasyPaisa transaction ──────
-  // EasyPaisa TxIDs are typically 10-20 alphanumeric characters
-  var cleanTxid = txid.replace(/\s/g,'');
-  if(cleanTxid.length < 8){
-    showToast('Invalid TxID','Please enter your full EasyPaisa Transaction ID.','error');
+  // ── VALIDATION: Server-side TxID check (second layer) ────────────────
+  var cleanTxid = txid.replace(/\s+/g,'');
+  // Must be 10-25 chars, contain both letters AND digits
+  if(cleanTxid.length < 10 || !/[0-9]/.test(cleanTxid) || !/[A-Za-z]/.test(cleanTxid)){
+    showToast('Invalid TxID','A real EasyPaisa TxID contains both letters and numbers (e.g. EP123456789).','error');
     return;
   }
 
